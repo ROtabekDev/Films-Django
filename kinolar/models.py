@@ -1,8 +1,9 @@
 from django.db import models
 from datetime import date
+from django.urls import reverse
 class Category(models.Model):
     """Kategoriya"""
-    title = models.CharField('Nomi', max_length=150)
+    name = models.CharField('Nomi', max_length=150)
     description = models.TextField("Tevsifi")
     url = models.SlugField(max_length=150, unique=True)
 
@@ -29,7 +30,7 @@ class Actor(models.Model):
 
 class Genre(models.Model):
     """Janrlar"""
-    title = models.CharField('Nomi', max_length=100)
+    name = models.CharField('Nomi', max_length=100)
     description = models.TextField("Tevsifi")
     url = models.SlugField(max_length=150, unique=True)
 
@@ -66,7 +67,10 @@ class Movie(models.Model):
     draft = models.BooleanField('Qoralama', default=False)
 
     def __str__(self):
-        return self.title
+        return self.title 
+
+    def get_absolute_url(self):
+        return reverse('movie-detail', kwargs={'slug': self.url})
 
     class Meta: 
         verbose_name = 'Kino'
