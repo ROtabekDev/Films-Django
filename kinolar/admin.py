@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+from django.utils.safestring import mark_safe
 from .models import Category, Genre, Movie, MovieShots, Actor, Rating, RatingStar, Reviews
 
 @admin.register(Category)
@@ -14,20 +14,34 @@ class ReviewInline(admin.TabularInline):
     extra: int=1
     readonly_fields = ("name", "email")
 
+class MovieShotsInline(admin.TabularInline):
+    """Filmdagi kadrlar"""
+    model = MovieShots
+    extra: int=1
+    readonly_fields = ("get_image",)
+
+    def get_image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="50" height="60"') 
+
+    get_image.short_description = "Rasmi"
+
+
+
 @admin.register(Movie)
 class MovieaAdmin(admin.ModelAdmin):
     """Kinolar"""
     list_display = ("title", "category", "url", "draft")
     list_filter = ("category", "year")
     search_fields = ("title", "category__name")
-    inlines = [ReviewInline] 
+    inlines = [MovieShotsInline, ReviewInline] 
     list_editable = ("draft",) 
+    readonly_fields = ("get_image",)
     fieldsets = (
         (None, {
             "fields": (("title", "tagline"),)
         }),
         (None, {
-            "fields": ("description", "poster" )
+            "fields": ("description", ("poster", "get_image"))
         }), 
         (None, {
             "fields": (("year", "premiere", "country"),)
@@ -44,6 +58,11 @@ class MovieaAdmin(admin.ModelAdmin):
         }), 
     )
 
+    def get_image(self, obj):
+        return mark_safe(f'<img src={obj.poster.url} width="100" height="110"') 
+
+    get_image.short_description = "Posteri"
+
 @admin.register(Reviews)
 class ReviewsAdmin(admin.ModelAdmin):
     """Kommentlar"""
@@ -58,7 +77,13 @@ class GenreAdmin(admin.ModelAdmin):
 @admin.register(Actor)
 class ActorAdmin(admin.ModelAdmin):
     """Jnarlar"""
-    list_display = ("name", "age") 
+    list_display = ("name", "age", "get_image")
+    readonly_fields = ("get_image", )
+
+    def get_image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="50" height="60"') 
+
+    get_image.short_description = "Rasmi"
 
 @admin.register(Rating)
 class MovieShotsAdmin(admin.ModelAdmin):
@@ -68,6 +93,15 @@ class MovieShotsAdmin(admin.ModelAdmin):
 @admin.register(MovieShots)
 class RatingAdmin(admin.ModelAdmin):
     """Jnarlar"""
-    list_display = ("title", "movie")   
+    list_display = ("title", "movie", "get_image")
+    readonly_fields = ("get_image", )
+
+    def get_image(self, obj):
+        return mark_safe(f'<img src={obj.image.url} width="50" height="60"') 
+
+    get_image.short_description = "Rasmi"   
      
 admin.site.register(RatingStar)
+
+admin.site.site_title = "Django Movies"
+admin.site.site_header = "Django Movies"
