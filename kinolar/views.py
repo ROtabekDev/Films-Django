@@ -3,7 +3,7 @@ from django.views.generic.base import View
 from django.views.generic import ListView, DetailView
 
 
-from .models import Movie
+from .models import Category, Movie
 from .forms import ReviewForm
 
 
@@ -17,7 +17,7 @@ class MoviesView(ListView):
     """Barcha filmlar ro`yhati"""
     model = Movie
     movies = Movie.objects.filter(draft=False)
-    template_name: str="movies/movies.html" 
+    template_name: str="movies/movies.html"  
 
 # class MovieDetailView(View):
 #     """Bitta film uchun"""
@@ -29,7 +29,7 @@ class MovieDetailView(DetailView):
     """Bitta film uchun""" 
     model = Movie
     slug_field: str = "url"
-    template_name: str = "movies/movie_detail.html" 
+    template_name: str = "movies/movie_detail.html"  
 
 class AddReview(View):
     """Kommentlar"""
