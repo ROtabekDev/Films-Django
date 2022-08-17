@@ -45,6 +45,7 @@ class MovieaAdmin(admin.ModelAdmin):
     inlines = [MovieShotsInline, ReviewInline] 
     list_editable = ("draft",) 
     readonly_fields = ("get_image",)
+    actions = ["publish", "unpublish"]
     form = MovieAdminForm
     fieldsets = (
         (None, {
@@ -71,6 +72,29 @@ class MovieaAdmin(admin.ModelAdmin):
     def get_image(self, obj):
         return mark_safe(f'<img src={obj.poster.url} width="100" height="110"') 
 
+    def unpublish(self, request, queryset):
+        row_update = queryset.update(draft=True)
+        if row_update == "1":
+            message_bit = "1 ta obyekt yangilandi"
+        else:
+            message_bit = f"{row_update} ta obyektlar yangilandi"
+        self.message_user(request, f"{message_bit}")
+
+    def publish(self, request, queryset):
+        row_update = queryset.update(draft=False)
+        if row_update == "1":
+            message_bit = "1 ta obyekt yangilandi"
+        else:
+            message_bit = f"{row_update} ta obyektlar yangilandi"
+
+        self.message_user(request, f"{message_bit}")
+    
+    publish.short_description = "Yuklanadi"
+    publish.allowed_permissions = ("change", )
+
+    unpublish.short_description = "O`chiriladi"
+    unpublish.allowed_permissions = ("change", )
+    
     get_image.short_description = "Posteri"
 
 @admin.register(Reviews)
