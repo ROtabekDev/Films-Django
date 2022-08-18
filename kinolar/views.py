@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.views.generic.base import View
 from django.views.generic import ListView, DetailView
 from django.db.models import Q
+from django.http import HttpResponse
 
-from .models import Actor, Category, Movie, Genre
-from .forms import ReviewForm
+from .models import Actor, Category, Movie, Genre, Rating
+from .forms import RatingForm, ReviewForm
 
 
 class GenreYear:
@@ -39,6 +40,11 @@ class MovieDetailView(GenreYear, DetailView):
     slug_field: str = "url"
     template_name: str = "movies/movie_detail.html"  
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["star_form"] = RatingForm()
+        return context 
+
 class AddReview(View):
     """Kommentlar"""
     def post(self, request, pk):
@@ -62,13 +68,31 @@ class ActorDetailView(GenreYear, DetailView):
 class FilterMoviesView(GenreYear, ListView): 
     template_name: str="movies/movies.html"  
     """Filtr"""
-    def get_queryset(self):
-        print("rungoooooooooooooooooooooooooooooooooooo")
-        print(self.request.GET.getlist("genre"))
-        print(self.request.GET.getlist("year"))
+    def get_queryset(self): 
         queryset = Movie.objects.filter(
             Q(year__in=self.request.GET.getlist("year")) |
             Q(genres__in=self.request.GET.getlist("genre") ) 
-            )
-        print(queryset)
+            ) 
         return queryset
+
+class AddStarRating(View):
+    """Filmga star qo`yish""" 
+    def get_client_ip(self, request):
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(',')[0]
+        else:
+            ip = request.META.get('REMOTE_ADDR')
+        return ip
+
+    def post(self, request):
+        form = RatingForm(request.POST)
+        if form.is_valid():
+            Rating.objects.update_or_create(
+                ip=self.get_client_ip(request),
+                movie_id=int(request.POST.get("movie")),
+                defaults={'star_id': int(request.POST.get("star"))}
+            )
+            return HttpResponse(status=201)
+        else:
+            return HttpResponse(status=400)

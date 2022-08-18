@@ -102,11 +102,12 @@ class RatingStar(models.Model):
  
 
     def __str__(self):
-        return self.value
+        return f'{self.value}'
 
     class Meta: 
         verbose_name = 'Reyting yulduz'
         verbose_name_plural = 'Reyting yulduzlar'
+        ordering = ["-value"]
 
 class Rating(models.Model):
     """Reyting"""
