@@ -3,7 +3,7 @@ from django.views.generic.base import View
 from django.views.generic import ListView, DetailView
 
 
-from .models import Category, Movie
+from .models import Actor, Category, Movie
 from .forms import ReviewForm
 
 
@@ -44,3 +44,8 @@ class AddReview(View):
             form.save() 
         return redirect(movie.get_absolute_url())
 
+class ActorDetailView(DetailView):
+    """Bitta Aktyor uchun""" 
+    model = Actor
+    slug_field: str = "name"
+    template_name: str = "movies/actor.html"  
