@@ -27,6 +27,7 @@ class MoviesView(GenreYear, ListView):
     model = Movie
     movies = Movie.objects.filter(draft=False)
     template_name: str="movies/movies.html"  
+    paginate_by: int=3
 
 # class MovieDetailView(View):
 #     """Bitta film uchun"""
@@ -66,14 +67,22 @@ class ActorDetailView(GenreYear, DetailView):
 
 
 class FilterMoviesView(GenreYear, ListView): 
-    template_name: str="movies/movies.html"  
     """Filtr"""
+    template_name: str="movies/movies.html"  
+    paginate_by: int=2
+
     def get_queryset(self): 
         queryset = Movie.objects.filter(
             Q(year__in=self.request.GET.getlist("year")) |
             Q(genres__in=self.request.GET.getlist("genre") ) 
-            ) 
+            ).distinct()
         return queryset
+
+    def get_context_data(self, *args,**kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['year'] = ''.join([f"year={x}&" for x in self.request.GET.getlist("year")])
+        context['genre'] = ''.join([f"genre={x}&" for x in self.request.GET.getlist("genre")])
+        return context
 
 class AddStarRating(View):
     """Filmga star qo`yish""" 
