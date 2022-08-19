@@ -44,7 +44,8 @@
                         <h3 class="footer-title text-uppercase editContent mb-lg-4 mb-3" >Newsletter</h3>
 
                         <p class="editContent" >By subscribing to our mailing list you will always get latest news and updates from us.</p>
-                        <form action="#" method="post" class="w3layouts-newsletter">
+                        <form action="#" method="get" class="w3layouts-newsletter">
+                            {% csrf_token %}
                             <input type="email" name="Email" class="editContent" placeholder="Enter your email..." required="" >
                             <button class="btn1 btn" ><span class="fa fa-paper-plane-o" aria-hidden="true" ></span></button>
 
@@ -55,13 +56,13 @@
                             <h3 class="footer-title text-uppercase editContent mb-lg-4 mb-3" >Разделы</h3>
                             <ul class="list-unstyled w3layouts-icons">
                                 <li>
-                                    <a href="index.html" class="editContent" >Главная</a>
+                                    <a href="{% url 'movies-list' %}" class="editContent" >Главная</a>
                                 </li>
                                 <li>
-                                    <a href="about.html" class="editContent" >Категории</a>
+                                    <a href="#" class="editContent" >Категории</a>
                                 </li>
                                 <li>
-                                    <a href="contact.html" class="editContent" >Контакты</a>
+                                    <a href="#" class="editContent" >Контакты</a>
                                 </li>
                             </ul>
                         </div>
@@ -73,19 +74,7 @@
 
                                     <li>
                                         <a href="#" class="editContent" >About Us</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="editContent" >About Us</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="editContent" >About Us</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="editContent" >About Us</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="editContent" >About Us</a>
-                                    </li>
+                                    </li> 
                                 </ul>
                             </div>
                             <!-- social icons -->
@@ -95,7 +84,7 @@
                             <div class="contact-info">
                                 <div class="footer-address-inf my-4">
                                     <h4 class="ad-info mb-2 editContent" >Email </h4>
-                                    <p class="editContent" ><a href="mailto:info@example.com">info@example.com</a></p>
+                                    <p class="editContent" ><a href="#">info@example.com</a></p>
                                 </div>
                                 <div class="footer-address-inf">
                                     <h4 class="ad-info mb-2 editContent" >Location</h4>
@@ -115,9 +104,9 @@
     <div class="cpy-right py-3">
         <div class="container">
             <div class="row">
-                <p class="col-md-10 text-left">© 2019 DjangoMovie. All rights reserved | Design by
+                <!-- <p class="col-md-10 text-left">© 2019 DjangoMovie. All rights reserved | Design by
                     <a href="https://djangochannel.com"> DJANGO SCHOOL.</a>
-                </p>
+                </p> -->
                 <!-- move top icon -->
                 <a href="#home" class="move-top text-right col-md-2"><span class="fa fa-long-arrow-up" aria-hidden="true" ></span></a>
                 <!-- //move top icon -->
